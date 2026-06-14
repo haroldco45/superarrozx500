@@ -151,6 +151,12 @@
     font-size:20px; font-weight:700; cursor:pointer; color:var(--verde-osc);
   }
   .qty-val{font-size:18px; font-weight:700; min-width:30px; text-align:center;}
+  .total-row{
+    margin-top:12px; background:#fff; border-radius:10px; padding:12px 14px;
+    font-size:15px; color:var(--texto); box-shadow:0 2px 8px rgba(0,0,0,.05);
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .total-row b{color:var(--verde-osc); font-size:19px;}
 
   .enviar-btn{
     margin-top:20px; width:100%; background:var(--verde); color:#fff; font-size:17px;
@@ -240,7 +246,7 @@
   <button class="producto-btn" onclick="irAFormulario()">
     <img id="imgProducto" class="producto-img" src="icons/placeholder.png" alt="SuperArroz Paca x25 libras">
     <div class="producto-nombre" id="nombreProducto">SuperArroz - Paca x25 libras de 500g</div>
-    <div class="producto-detalle" id="precioProducto">Toca la imagen para hacer tu pedido</div>
+    <div class="producto-detalle" id="precioProducto">$43.000 c/u · Toca la imagen para pedir</div>
     <div class="cta">📦 Pedir ahora</div>
   </button>
   <div class="empresa-footer">📍 Caucasia, Antioquia · Distrileco</div>
@@ -258,7 +264,7 @@
     <img id="imgResumen" src="icons/placeholder.png" alt="">
     <div>
       <b id="nombreResumen">SuperArroz - Paca x25 libras</b>
-      <small>Producto x 500 gramos c/u</small>
+      <small id="precioUnitResumen">$43.000 c/u · 500 gramos c/u</small>
     </div>
   </div>
 
@@ -268,6 +274,7 @@
     <div class="qty-val" id="qtyVal">1</div>
     <button class="qty-btn" onclick="cambiarCantidad(1)">+</button>
   </div>
+  <div class="total-row" id="totalRow">Total: <b id="totalVal">$43.000</b></div>
 
   <label for="f_nombre">Nombre completo *</label>
   <input type="text" id="f_nombre" placeholder="Ej: Juan Pérez" required>
@@ -305,8 +312,8 @@
 <!-- ===================== PANTALLA EXITO ===================== -->
 <div id="exito" class="pantalla">
   <div class="check">✅</div>
-  <h2>¡Pedido recibido!</h2>
-  <p>Gracias por tu compra. Pronto nos comunicaremos contigo para coordinar la entrega de tu SuperArroz.</p>
+  <h2>¡Pedido listo!</h2>
+  <p>Te abrimos WhatsApp con los datos de tu pedido. Solo toca "Enviar" para confirmarlo con Distrileco. Pronto nos comunicaremos contigo.</p>
   <button class="cta" style="margin-top:20px; border:none; cursor:pointer;" onclick="mostrarPantalla('home')">Volver al inicio</button>
 </div>
 
@@ -336,7 +343,12 @@
 
   <!-- TAB PEDIDOS -->
   <div class="seccion activa" id="tab-pedidos">
-    <button class="accion-grande accion-verde" onclick="generarToken()">📲 Enviar histórico por WhatsApp (token)</button>
+    <p style="font-size:12.5px; color:var(--gris); margin-bottom:10px;">
+      📌 Los pedidos de clientes llegan directo a tu WhatsApp. Esta sección es un registro manual para que anotes tus ventas.
+    </p>
+    <button class="accion-grande accion-verde" onclick="abrirNuevoPedido()">➕ Agregar pedido</button>
+    <button class="accion-grande accion-naranja" onclick="abrirPegarPedido()">📋 Pegar pedido desde WhatsApp</button>
+    <button class="accion-grande accion-azul" onclick="generarToken()">📲 Enviar histórico por WhatsApp (token)</button>
     <button class="accion-grande accion-azul" onclick="exportarExcel()">📊 Exportar pedidos a Excel (CSV)</button>
     <div id="listaPedidos"></div>
   </div>
@@ -346,8 +358,11 @@
     <label>Nombre del producto</label>
     <input type="text" id="cfgNombre">
 
-    <label>Texto descriptivo / precio (se muestra al cliente)</label>
+    <label>Texto descriptivo (se muestra al cliente)</label>
     <input type="text" id="cfgDescripcion">
+
+    <label>Precio por paca (COP)</label>
+    <input type="number" id="cfgPrecio" placeholder="43000">
 
     <label>Nombre de la empresa</label>
     <input type="text" id="cfgEmpresa">
@@ -381,7 +396,7 @@
 <!-- ===================== MODAL EDITAR PEDIDO ===================== -->
 <div class="modal-bg" id="modalEditar">
   <div class="modal">
-    <h3>✏️ Editar pedido</h3>
+    <h3 id="modalTitulo">✏️ Editar pedido</h3>
     <label>Nombre</label>
     <input type="text" id="e_nombre">
     <label>Dirección</label>
@@ -409,6 +424,24 @@
     <div class="pedido-acciones" style="margin-top:14px;">
       <button class="btn-editar" onclick="guardarEdicion()">Guardar</button>
       <button class="btn-eliminar" onclick="cerrarModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODAL PEGAR PEDIDO WHATSAPP ===================== -->
+<div class="modal-bg" id="modalPegar">
+  <div class="modal">
+    <h3>📋 Pegar pedido desde WhatsApp</h3>
+    <p style="font-size:12.5px; color:var(--gris); margin-bottom:8px;">
+      Copia el mensaje completo que recibiste por WhatsApp y pégalo aquí. La app extraerá los datos automáticamente.
+    </p>
+    <textarea id="textoPegado" rows="10" placeholder="🛒 NUEVO PEDIDO - SUPERARROZ
+📦 Producto: ...
+🔢 Cantidad: ...
+..."></textarea>
+    <div class="pedido-acciones" style="margin-top:14px;">
+      <button class="btn-editar" onclick="procesarPegarPedido()">Interpretar y agregar</button>
+      <button class="btn-eliminar" onclick="cerrarModalPegar()">Cancelar</button>
     </div>
   </div>
 </div>
