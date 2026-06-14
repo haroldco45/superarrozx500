@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SuperArroz - Paca x25 lb - Distrileco</title>
+
+<!-- Open Graph -->
+<meta property="og:title" content="SuperArroz - Paca x25 libras de 500g - Distrileco">
+<meta property="og:description" content="¡Pide ahora tu paca de SuperArroz x25 libras! Entrega rápida en Caucasia y zona. Distrileco.">
+<meta property="og:image" content="https://haroldco45.github.io/superarroz-app/icons/producto.jpg">
+<meta property="og:url" content="https://haroldco45.github.io/superarroz-app/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SuperArroz - Paca x25 libras de 500g">
+<meta name="twitter:description" content="¡Pide ahora tu paca de SuperArroz x25 libras! Entrega rápida - Distrileco.">
+<meta name="twitter:image" content="https://haroldco45.github.io/superarroz-app/icons/producto.jpg">
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1a7f37">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+
+<style>
+  :root{
+    --verde:#1a7f37;
+    --verde-osc:#0f5c26;
+    --crema:#fdf6e9;
+    --texto:#26323a;
+    --gris:#7a8a91;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:'Segoe UI', Arial, sans-serif;
+    background:var(--crema);
+    color:var(--texto);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .pantalla{
+    display:none;
+    min-height:100vh;
+    flex-direction:column;
+  }
+  .pantalla.activa{display:flex;}
+
+  /* ---------- HOME ---------- */
+  #home{
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    text-align:center;
+  }
+  .marca{
+    font-size:13px;
+    color:var(--gris);
+    margin-bottom:6px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+  }
+  .producto-btn{
+    background:#fff;
+    border:none;
+    border-radius:18px;
+    padding:16px;
+    box-shadow:0 6px 24px rgba(0,0,0,.12);
+    cursor:pointer;
+    width:100%;
+    max-width:380px;
+    transition:transform .15s ease;
+  }
+  .producto-btn:active{transform:scale(.97);}
+  .producto-img{
+    width:100%;
+    height:280px;
+    object-fit:cover;
+    border-radius:12px;
+    background:#e9e2d0 url('icons/placeholder.png') center/cover;
+  }
+  .producto-nombre{
+    font-size:22px;
+    font-weight:800;
+    color:var(--verde-osc);
+    margin-top:14px;
+  }
+  .producto-detalle{
+    font-size:15px;
+    color:var(--gris);
+    margin-top:4px;
+  }
+  .cta{
+    margin-top:14px;
+    background:var(--verde);
+    color:#fff;
+    font-weight:700;
+    font-size:17px;
+    padding:14px 30px;
+    border-radius:30px;
+    display:inline-block;
+  }
+  .empresa-footer{
+    margin-top:20px;
+    font-size:12px;
+    color:var(--gris);
+  }
+  .admin-link{
+    position:fixed; bottom:8px; right:10px;
+    font-size:11px; color:var(--gris); opacity:.5;
+    text-decoration:none;
+  }
+
+  /* ---------- FORMULARIO ---------- */
+  #formulario{
+    padding:18px;
+    max-width:480px;
+    margin:0 auto;
+    width:100%;
+  }
+  .topbar{
+    display:flex; align-items:center; gap:10px;
+    margin-bottom:14px;
+  }
+  .volver{
+    background:none; border:none; font-size:24px; cursor:pointer; color:var(--verde-osc);
+  }
+  .topbar h2{font-size:18px; color:var(--verde-osc);}
+  .resumen-card{
+    background:#fff; border-radius:14px; padding:12px; display:flex; gap:12px; align-items:center;
+    box-shadow:0 2px 10px rgba(0,0,0,.06); margin-bottom:16px;
+  }
+  .resumen-card img{width:62px; height:62px; object-fit:cover; border-radius:8px; background:#eee;}
+  .resumen-card div b{font-size:15px;}
+  .resumen-card div small{color:var(--gris); display:block; margin-top:2px;}
+
+  label{font-size:13px; font-weight:600; color:var(--texto); display:block; margin:12px 0 4px;}
+  input, select, textarea{
+    width:100%; padding:12px; border:1px solid #d9d2c0; border-radius:10px;
+    font-size:15px; background:#fff; font-family:inherit;
+  }
+  textarea{resize:vertical; min-height:70px;}
+  .gps-row{display:flex; gap:8px; align-items:center;}
+  .gps-btn{
+    background:var(--verde); color:#fff; border:none; border-radius:10px;
+    padding:12px 14px; font-size:14px; font-weight:600; white-space:nowrap; cursor:pointer;
+  }
+  .gps-status{font-size:12.5px; color:var(--gris); margin-top:6px;}
+  .gps-ok{color:var(--verde-osc); font-weight:600;}
+
+  .qty-row{display:flex; align-items:center; gap:10px; margin-top:6px;}
+  .qty-btn{
+    width:42px; height:42px; border-radius:10px; border:1px solid #d9d2c0; background:#fff;
+    font-size:20px; font-weight:700; cursor:pointer; color:var(--verde-osc);
+  }
+  .qty-val{font-size:18px; font-weight:700; min-width:30px; text-align:center;}
+
+  .enviar-btn{
+    margin-top:20px; width:100%; background:var(--verde); color:#fff; font-size:17px;
+    font-weight:700; padding:15px; border:none; border-radius:12px; cursor:pointer;
+  }
+  .enviar-btn:active{background:var(--verde-osc);}
+  .nota-legal{
+    font-size:11.5px; color:var(--gris); margin-top:14px; line-height:1.4; text-align:center;
+  }
+
+  /* ---------- EXITO ---------- */
+  #exito{
+    align-items:center; justify-content:center; text-align:center; padding:24px;
+  }
+  #exito .check{font-size:64px;}
+  #exito h2{color:var(--verde-osc); margin-top:10px;}
+  #exito p{color:var(--gris); margin-top:8px; max-width:320px;}
+  #exito button{margin-top:20px;}
+
+  /* ---------- ADMIN ---------- */
+  #admin{padding:16px; max-width:600px; margin:0 auto; width:100%;}
+  .admin-header{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;}
+  .admin-header h2{color:var(--verde-osc); font-size:18px;}
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{
+    flex:1; padding:10px; border-radius:10px; border:1px solid #d9d2c0; background:#fff;
+    text-align:center; font-size:13px; font-weight:600; cursor:pointer; color:var(--texto); min-width:80px;
+  }
+  .tab.activo{background:var(--verde); color:#fff; border-color:var(--verde);}
+  .seccion{display:none;}
+  .seccion.activa{display:block;}
+
+  .pedido-card{
+    background:#fff; border-radius:12px; padding:12px; margin-bottom:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.05); font-size:13.5px;
+  }
+  .pedido-card .fila{display:flex; justify-content:space-between; margin-bottom:4px;}
+  .pedido-card b{color:var(--verde-osc);}
+  .pedido-acciones{display:flex; gap:8px; margin-top:8px;}
+  .pedido-acciones button{
+    flex:1; padding:8px; font-size:12.5px; border:none; border-radius:8px; cursor:pointer; font-weight:600;
+  }
+  .btn-editar{background:#e8f0fe; color:#1a4d8f;}
+  .btn-eliminar{background:#fdeaea; color:#b3261e;}
+  .btn-whatsapp{background:#e6f7ea; color:var(--verde-osc);}
+  .btn-mapa{background:#fff3e0; color:#a35a00;}
+
+  .accion-grande{
+    display:block; width:100%; padding:14px; margin-bottom:10px; border:none; border-radius:12px;
+    font-size:15px; font-weight:700; cursor:pointer; text-align:left;
+  }
+  .accion-azul{background:#e8f0fe; color:#1a4d8f;}
+  .accion-verde{background:#e6f7ea; color:var(--verde-osc);}
+  .accion-naranja{background:#fff3e0; color:#a35a00;}
+  .accion-roja{background:#fdeaea; color:#b3261e;}
+
+  .config-img-preview{
+    width:100%; max-height:180px; object-fit:cover; border-radius:10px; margin:10px 0; background:#eee;
+  }
+
+  .modal-bg{
+    display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:50;
+    align-items:center; justify-content:center; padding:16px;
+  }
+  .modal-bg.activo{display:flex;}
+  .modal{
+    background:#fff; border-radius:14px; padding:18px; max-width:420px; width:100%; max-height:88vh; overflow-y:auto;
+  }
+  .modal h3{color:var(--verde-osc); margin-bottom:10px;}
+  .empty-msg{text-align:center; color:var(--gris); padding:30px 10px; font-size:14px;}
+
+  .login-box{
+    max-width:320px; margin:60px auto; text-align:center; padding:24px; background:#fff; border-radius:14px;
+    box-shadow:0 4px 20px rgba(0,0,0,.08);
+  }
+  .login-box h3{color:var(--verde-osc); margin-bottom:14px;}
+  .footer-marca{
+    text-align:center; font-size:10.5px; color:#bbb; margin-top:24px; padding:10px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ===================== PANTALLA HOME (CLIENTE) ===================== -->
+<div id="home" class="pantalla activa">
+  <div class="marca" id="nombreEmpresa">DISTRILECO</div>
+  <button class="producto-btn" onclick="irAFormulario()">
+    <img id="imgProducto" class="producto-img" src="icons/placeholder.png" alt="SuperArroz Paca x25 libras">
+    <div class="producto-nombre" id="nombreProducto">SuperArroz - Paca x25 libras de 500g</div>
+    <div class="producto-detalle" id="precioProducto">Toca la imagen para hacer tu pedido</div>
+    <div class="cta">📦 Pedir ahora</div>
+  </button>
+  <div class="empresa-footer">📍 Caucasia, Antioquia · Distrileco</div>
+  <a class="admin-link" href="#admin" onclick="abrirAdmin(event)">admin</a>
+</div>
+
+<!-- ===================== FORMULARIO PEDIDO ===================== -->
+<div id="formulario" class="pantalla">
+  <div class="topbar">
+    <button class="volver" onclick="mostrarPantalla('home')">←</button>
+    <h2>Datos para tu pedido</h2>
+  </div>
+
+  <div class="resumen-card">
+    <img id="imgResumen" src="icons/placeholder.png" alt="">
+    <div>
+      <b id="nombreResumen">SuperArroz - Paca x25 libras</b>
+      <small>Producto x 500 gramos c/u</small>
+    </div>
+  </div>
+
+  <label>Cantidad de pacas</label>
+  <div class="qty-row">
+    <button class="qty-btn" onclick="cambiarCantidad(-1)">−</button>
+    <div class="qty-val" id="qtyVal">1</div>
+    <button class="qty-btn" onclick="cambiarCantidad(1)">+</button>
+  </div>
+
+  <label for="f_nombre">Nombre completo *</label>
+  <input type="text" id="f_nombre" placeholder="Ej: Juan Pérez" required>
+
+  <label for="f_direccion">Dirección de entrega *</label>
+  <input type="text" id="f_direccion" placeholder="Ej: Calle 10 # 5-23, Barrio Centro" required>
+
+  <label for="f_celular">Celular / WhatsApp *</label>
+  <input type="tel" id="f_celular" placeholder="Ej: 3001234567" required>
+
+  <label>Ubicación GPS (para que el repartidor no se pierda)</label>
+  <div class="gps-row">
+    <button type="button" class="gps-btn" onclick="obtenerGPS()">📍 Obtener mi ubicación</button>
+  </div>
+  <div class="gps-status" id="gpsStatus">No se ha obtenido ubicación todavía.</div>
+
+  <label for="f_pago">Forma de pago (informativo)</label>
+  <select id="f_pago">
+    <option value="Efectivo">Efectivo al recibir</option>
+    <option value="Transferencia">Transferencia / Nequi / Daviplata</option>
+    <option value="Tarjeta">Tarjeta (datáfono al recibir)</option>
+    <option value="Por confirmar">Por confirmar con el vendedor</option>
+  </select>
+
+  <label for="f_obs">Observaciones adicionales</label>
+  <textarea id="f_obs" placeholder="Ej: Llamar antes de llegar, dejar con el portero, referencia del lugar, etc."></textarea>
+
+  <button class="enviar-btn" onclick="enviarPedido()">✅ Confirmar pedido</button>
+
+  <div class="nota-legal">
+    🔒 Tus datos se usan únicamente para procesar y entregar tu pedido (Ley 1581 de 2012 – Habeas Data). La forma de pago es solo informativa, esta app no procesa pagos.
+  </div>
+</div>
+
+<!-- ===================== PANTALLA EXITO ===================== -->
+<div id="exito" class="pantalla">
+  <div class="check">✅</div>
+  <h2>¡Pedido recibido!</h2>
+  <p>Gracias por tu compra. Pronto nos comunicaremos contigo para coordinar la entrega de tu SuperArroz.</p>
+  <button class="cta" style="margin-top:20px; border:none; cursor:pointer;" onclick="mostrarPantalla('home')">Volver al inicio</button>
+</div>
+
+<!-- ===================== LOGIN ADMIN ===================== -->
+<div id="login" class="pantalla">
+  <div class="login-box">
+    <h3>🔐 Acceso Administrador</h3>
+    <label>Token / Clave</label>
+    <input type="password" id="loginToken" placeholder="Ingresa tu token">
+    <button class="enviar-btn" onclick="validarLogin()">Entrar</button>
+    <button class="volver" style="margin-top:10px;" onclick="mostrarPantalla('home')">Cancelar</button>
+  </div>
+</div>
+
+<!-- ===================== ADMIN ===================== -->
+<div id="admin" class="pantalla">
+  <div class="admin-header">
+    <h2>📋 Panel Administrador</h2>
+    <button class="volver" onclick="cerrarSesionAdmin()">✕</button>
+  </div>
+
+  <div class="tabs">
+    <div class="tab activo" data-tab="pedidos" onclick="cambiarTab('pedidos')">Pedidos</div>
+    <div class="tab" data-tab="config" onclick="cambiarTab('config')">Producto</div>
+    <div class="tab" data-tab="datos" onclick="cambiarTab('datos')">Datos</div>
+  </div>
+
+  <!-- TAB PEDIDOS -->
+  <div class="seccion activa" id="tab-pedidos">
+    <button class="accion-grande accion-verde" onclick="generarToken()">📲 Enviar histórico por WhatsApp (token)</button>
+    <button class="accion-grande accion-azul" onclick="exportarExcel()">📊 Exportar pedidos a Excel (CSV)</button>
+    <div id="listaPedidos"></div>
+  </div>
+
+  <!-- TAB CONFIG PRODUCTO -->
+  <div class="seccion" id="tab-config">
+    <label>Nombre del producto</label>
+    <input type="text" id="cfgNombre">
+
+    <label>Texto descriptivo / precio (se muestra al cliente)</label>
+    <input type="text" id="cfgDescripcion">
+
+    <label>Nombre de la empresa</label>
+    <input type="text" id="cfgEmpresa">
+
+    <label>Imagen del producto</label>
+    <img id="cfgImgPreview" class="config-img-preview" src="icons/placeholder.png">
+    <input type="file" id="cfgImgInput" accept="image/*" onchange="cargarImagen(event)">
+
+    <button class="enviar-btn" onclick="guardarConfig()">💾 Guardar cambios</button>
+  </div>
+
+  <!-- TAB DATOS / BACKUP -->
+  <div class="seccion" id="tab-datos">
+    <button class="accion-grande accion-azul" onclick="descargarBackup()">⬇️ Descargar backup (JSON)</button>
+    <button class="accion-grande accion-naranja" onclick="document.getElementById('restoreInput').click()">⬆️ Restaurar backup</button>
+    <input type="file" id="restoreInput" accept="application/json" style="display:none" onchange="restaurarBackup(event)">
+    <button class="accion-grande accion-roja" onclick="borrarTodo()">🗑️ Borrar todos los pedidos</button>
+
+    <label style="margin-top:18px;">Cambiar token de administrador</label>
+    <input type="password" id="nuevoToken" placeholder="Nuevo token">
+    <button class="enviar-btn" onclick="cambiarToken()">Actualizar token</button>
+
+    <label style="margin-top:18px;">Número de WhatsApp para informes</label>
+    <input type="tel" id="cfgWhatsapp" placeholder="3117700431">
+    <button class="enviar-btn" onclick="guardarWhatsapp()">Guardar número</button>
+  </div>
+
+  <div class="footer-marca">Desarrollada por Vibras Positivas HM — Derechos de Autor Reservados</div>
+</div>
+
+<!-- ===================== MODAL EDITAR PEDIDO ===================== -->
+<div class="modal-bg" id="modalEditar">
+  <div class="modal">
+    <h3>✏️ Editar pedido</h3>
+    <label>Nombre</label>
+    <input type="text" id="e_nombre">
+    <label>Dirección</label>
+    <input type="text" id="e_direccion">
+    <label>Celular</label>
+    <input type="tel" id="e_celular">
+    <label>Cantidad</label>
+    <input type="number" id="e_cantidad" min="1">
+    <label>Forma de pago</label>
+    <select id="e_pago">
+      <option>Efectivo</option>
+      <option>Transferencia</option>
+      <option>Tarjeta</option>
+      <option>Por confirmar</option>
+    </select>
+    <label>Observaciones</label>
+    <textarea id="e_obs"></textarea>
+    <label>Estado</label>
+    <select id="e_estado">
+      <option value="pendiente">Pendiente</option>
+      <option value="enviado">Enviado</option>
+      <option value="entregado">Entregado</option>
+      <option value="cancelado">Cancelado</option>
+    </select>
+    <div class="pedido-acciones" style="margin-top:14px;">
+      <button class="btn-editar" onclick="guardarEdicion()">Guardar</button>
+      <button class="btn-eliminar" onclick="cerrarModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
